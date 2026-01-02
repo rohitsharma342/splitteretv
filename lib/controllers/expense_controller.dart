@@ -2,38 +2,50 @@ import 'package:flutter/foundation.dart';
 import '../models/expense.dart';
 import '../models/user.dart';
 import '../models/notification.dart';
-import '../services/static_data_service.dart';
+import '../repositories/expense_repository.dart';
 
 class ExpenseController extends ChangeNotifier {
   List<Expense> _expenses = [];
   List<AppNotification> _notifications = [];
   bool _isLoading = false;
+  String _error = '';
   
   List<Expense> get expenses => _expenses;
   List<AppNotification> get notifications => _notifications;
   bool get isLoading => _isLoading;
+  String get error => _error;
   
   List<AppNotification> get unreadNotifications =>
       _notifications.where((notification) => !notification.isRead).toList();
   
   ExpenseController() {
-    _loadExpenses();
-    _loadNotifications();
+    loadExpenses();
+    loadNotifications();
   }
   
-  void _loadExpenses() {
-    _isLoading = true;
-    notifyListeners();
-    
-    _expenses = StaticDataService.getExpenses();
-    
-    _isLoading = false;
-    notifyListeners();
+  Future<void> loadExpenses() async {
+    try {
+      _isLoading = true;
+      _error = '';
+      notifyListeners();
+      
+      _expenses = await ExpenseRepository.getAllExpenses();
+    } catch (e) {
+      _error = 'Failed to load expenses: $e';
+      print('Error loading expenses: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
   
-  void _loadNotifications() {
-    _notifications = StaticDataService.getNotifications();
-    notifyListeners();
+  Future<void> loadNotifications() async {
+    try {
+      _notifications = await ExpenseRepository.getAllNotifications();
+      notifyListeners();
+    } catch (e) {
+      print('Error loading notifications: $e');
+    }
   }
   
   Future<void> addExpense({
@@ -46,62 +58,78 @@ class ExpenseController extends ChangeNotifier {
     required List<ExpenseSplit> splits,
     String? groupId,
   }) async {
-    _isLoading = true;
-    notifyListeners();
-    
-    // Simulate API call delay
-    await Future.delayed(const Duration(seconds: 1));
-    
-    final newExpense = Expense(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      amount: amount,
-      category: category,
-      date: date,
-      notes: notes,
-      paidBy: paidBy,
-      splits: splits,
-      groupId: groupId,
-      createdAt: DateTime.now(),
-    );
-    
-    _expenses.insert(0, newExpense);
-    
-    // Add notification for new expense
-    _addNotification(
-      title: 'New Expense Added',
-      message: '${paidBy.name} added "$title" (\$${amount.toStringAsFixed(2)})',
-      type: 'expense',
-      data: {'expenseId': newExpense.id, 'userId': paidBy.id},
-    );
-    
-    _isLoading = false;
-    notifyListeners();
+    try {
+      _isLoading = true;
+      _error = '';
+      notifyListeners();
+      
+      final newExpense = Expense(
+        id: '', // Will be set by database
+        title: title,
+        amount: amount,
+        category: category,
+        date: date,
+        notes: notes,
+        paidBy: paidBy,
+        splits: splits,
+        groupId: groupId,
+        createdAt: DateTime.now(),
+      );
+      
+      final createdExpense = await ExpenseRepository.createExpense(newExpense);
+      _expenses.insert(0, createdExpense);
+      
+      // Add notification for new expense
+      await _addNotification(
+        title: 'New Expense Added',
+        message: '${paidBy.name} added "$title" (\$${amount.toStringAsFixed(2)})',
+        type: 'expense',
+        data: {'expenseId': createdExpense.id, 'userId': paidBy.id},
+      );
+    } catch (e) {
+      _error = 'Failed to add expense: $e';
+      print('Error adding expense: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
   
-  void _addNotification({
+  Future<void> _addNotification({
     required String title,
     required String message,
     required String type,
     Map<String, dynamic>? data,
-  }) {
-    final notification = AppNotification(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      message: message,
-      type: type,
-      createdAt: DateTime.now(),
-      data: data,
-    );
-    
-    _notifications.insert(0, notification);
+  }) async {
+    try {
+      final notification = AppNotification(
+        id: '', // Will be set by database
+        title: title,
+        message: message,
+        type: type,
+        createdAt: DateTime.now(),
+        data: data,
+      );
+      
+      final createdNotification = await ExpenseRepository.createNotification(notification);
+      _notifications.insert(0, createdNotification);
+      notifyListeners();
+    } catch (e) {
+      print('Error adding notification: $e');
+    }
   }
   
-  void markNotificationAsRead(String notificationId) {
-    final index = _notifications.indexWhere((n) => n.id == notificationId);
-    if (index != -1) {
-      _notifications[index] = _notifications[index].copyWith(isRead: true);
-      notifyListeners();
+  Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      final index = _notifications.indexWhere((n) => n.id == notificationId);
+      if (index != -1) {
+        final updatedNotification = _notifications[index].copyWith(isRead: true);
+        await ExpenseRepository.updateNotification(notificationId, updatedNotification);
+        _notifications[index] = updatedNotification;
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error marking notification as read: $e');
     }
   }
   
@@ -161,5 +189,10 @@ class ExpenseController extends ChangeNotifier {
     }
     
     return balances;
+  }
+  
+  void clearError() {
+    _error = '';
+    notifyListeners();
   }
 }

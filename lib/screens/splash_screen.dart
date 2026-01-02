@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
+import '../controllers/auth_controller.dart';
 import '../utils/colors.dart';
 import '../utils/constants.dart';
 import 'dashboard_screen.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,74 +14,68 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _textController;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _textAnimation;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
   
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
-    _startSplashSequence();
+    _checkAuthStatus();
   }
   
   void _initializeAnimations() {
-    _logoController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
     
-    _textController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    
-    _logoAnimation = Tween<double>(
+    _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _logoController,
+      parent: _animationController,
+      curve: Curves.easeIn,
+    ));
+    
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
       curve: Curves.elasticOut,
     ));
     
-    _textAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeInOut,
-    ));
+    _animationController.forward();
   }
   
-  Future<void> _startSplashSequence() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _logoController.forward();
-    
-    await Future.delayed(const Duration(milliseconds: 800));
-    _textController.forward();
-    
-    await Future.delayed(const Duration(milliseconds: 2000));
+  Future<void> _checkAuthStatus() async {
+    await Future.delayed(const Duration(seconds: 3));
     
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const DashboardScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 800),
-        ),
-      );
+      final authController = context.read<AuthController>();
+      
+      if (authController.isAuthenticated) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const DashboardScreen(),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+      }
     }
   }
   
   @override
   void dispose() {
-    _logoController.dispose();
-    _textController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
   
@@ -88,74 +84,69 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedBuilder(
-              animation: _logoAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _logoAnimation.value,
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadow,
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.account_balance_wallet,
-                      size: 60,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: AppConstants.largePadding),
-            AnimatedBuilder(
-              animation: _textAnimation,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _textAnimation.value,
-                  child: Column(
-                    children: [
-                      const Text(
-                        AppConstants.appName,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textWhite,
-                          letterSpacing: 1.2,
-                        ),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: AppColors.textWhite,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppConstants.smallPadding),
-                      Text(
-                        AppConstants.tagline,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.textWhite.withOpacity(0.9),
-                          letterSpacing: 0.5,
-                        ),
+                      child: const Icon(
+                        Icons.account_balance_wallet,
+                        size: 60,
+                        color: AppColors.primary,
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 60),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.textWhite),
-              strokeWidth: 2,
-            ),
-          ],
+                    ),
+                    const SizedBox(height: AppConstants.largePadding),
+                    const Text(
+                      AppConstants.appName,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textWhite,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: AppConstants.smallPadding),
+                    const Text(
+                      'Split expenses with ease',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textWhite,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    const SizedBox(height: AppConstants.largePadding * 2),
+                    const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.textWhite),
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

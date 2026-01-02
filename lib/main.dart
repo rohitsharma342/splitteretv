@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:splitteretv/controllers/expense_controller.dart';
 import 'package:splitteretv/controllers/group_controller.dart';
 import 'package:splitteretv/controllers/user_controller.dart';
+import 'package:splitteretv/controllers/auth_controller.dart';
 import 'package:splitteretv/screens/splash_screen.dart';
 import 'package:splitteretv/utils/colors.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Supabase.initialize(
+    url: 'https://nrvykkckjbxftydwdzmk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ydnlra2NramJ4ZnR5ZHdkem1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczMjc0MjEsImV4cCI6MjA4MjkwMzQyMX0.DjFyJkSXHBYvMPp-41Tpm51efVYSw3P4QjeSqmFwcNE',
+  );
+  
   runApp(const SplitteretVApp());
 }
 
@@ -17,6 +26,7 @@ class SplitteretVApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuthController()),
         ChangeNotifierProvider(create: (_) => ExpenseController()),
         ChangeNotifierProvider(create: (_) => GroupController()),
         ChangeNotifierProvider(create: (_) => UserController()),

@@ -3,16 +3,24 @@ import '../utils/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final Widget? leading;
   final List<Widget>? actions;
-  final bool centerTitle;
+  final Widget? leading;
+  final bool showBackButton;
+  final VoidCallback? onBackPressed;
+  final Color? backgroundColor;
+  final Color? titleColor;
+  final double elevation;
   
   const CustomAppBar({
     super.key,
     required this.title,
-    this.leading,
     this.actions,
-    this.centerTitle = true,
+    this.leading,
+    this.showBackButton = true,
+    this.onBackPressed,
+    this.backgroundColor,
+    this.titleColor,
+    this.elevation = 0,
   });
   
   @override
@@ -20,30 +28,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: const TextStyle(
-          color: AppColors.textDark,
+        style: TextStyle(
+          color: titleColor ?? AppColors.textDark,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
       ),
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: centerTitle,
-      leading: leading,
+      backgroundColor: backgroundColor ?? AppColors.background,
+      elevation: elevation,
+      leading: leading ?? (showBackButton && Navigator.of(context).canPop()
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: AppColors.textDark),
+              onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+            )
+          : null),
       actions: actions,
-      iconTheme: const IconThemeData(
-        color: AppColors.textDark,
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(
-          height: 1,
-          color: AppColors.border,
-        ),
-      ),
+      centerTitle: false,
+      automaticallyImplyLeading: false,
     );
   }
   
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
