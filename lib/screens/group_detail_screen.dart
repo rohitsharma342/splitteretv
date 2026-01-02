@@ -115,7 +115,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen>
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (widget.group.description != null) ..[
+                if (widget.group.description != null) ...[
                   const SizedBox(height: AppConstants.smallPadding),
                   Text(
                     widget.group.description!,
