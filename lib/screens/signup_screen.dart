@@ -58,7 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildSignUpButton(authController),
                   const SizedBox(height: AppConstants.defaultPadding),
                   _buildLoginLink(),
-                  if (authController.error.isNotEmpty) ..[
+                  if (authController.error.isNotEmpty) ... [
                     const SizedBox(height: AppConstants.defaultPadding),
                     _buildErrorMessage(authController.error),
                   ],

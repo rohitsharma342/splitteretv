@@ -63,7 +63,7 @@ class AppConstants {
   
   // Currency
   static const String defaultCurrency = 'USD';
-  static const String currencySymbol = '$';
+  static const String currencySymbol = r'$';
   
   // Date Formats
   static const String dateFormat = 'MMM dd, yyyy';

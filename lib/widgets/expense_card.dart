@@ -149,7 +149,7 @@ class ExpenseCard extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        if (paidSplits < splitCount) ..[
+        if (paidSplits < splitCount) ... [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class ExpenseCard extends StatelessWidget {
               ),
             ),
           ),
-        ] else ..[
+        ] else ... [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(

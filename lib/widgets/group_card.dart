@@ -39,7 +39,7 @@ class GroupCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
-                  if (group.description != null) ..[
+                  if (group.description != null) ... [
                     const SizedBox(height: AppConstants.smallPadding),
                     _buildDescription(),
                   ],
