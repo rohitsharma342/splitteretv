@@ -96,7 +96,7 @@ class GroupCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (group.description != null && group.description!.isNotEmpty) ..[
+                  if (group.description != null && group.description!.isNotEmpty) ...[
                     const SizedBox(height: AppConstants.smallPadding),
                     Text(
                       group.description!,

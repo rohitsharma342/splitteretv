@@ -122,7 +122,7 @@ class ExpenseCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (expense.notes != null && expense.notes!.isNotEmpty) ..[
+              if (expense.notes != null && expense.notes!.isNotEmpty) ...[
                 const SizedBox(height: AppConstants.smallPadding),
                 Text(
                   expense.notes!,

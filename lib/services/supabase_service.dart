@@ -79,7 +79,7 @@ class SupabaseService {
       var query = _client.from(table).select();
       
       if (orderBy != null) {
-        query = query.order(orderBy, ascending: ascending);
+        query = query.order(orderBy, ascending: ascending) as dynamic;
       }
       
       final response = await query;
@@ -164,7 +164,7 @@ class SupabaseService {
       var query = _client.from(table).select().eq(column, value);
       
       if (orderBy != null) {
-        query = query.order(orderBy, ascending: ascending);
+        query = query.order(orderBy, ascending: ascending) as dynamic;
       }
       
       final response = await query;
