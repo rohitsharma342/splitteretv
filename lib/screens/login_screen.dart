@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildLoginButton(authController),
                   const SizedBox(height: AppConstants.defaultPadding),
                   _buildSignUpLink(),
-                  if (authController.error.isNotEmpty) ... [
+                  if (authController.error.isNotEmpty) ...<Widget>[
                     const SizedBox(height: AppConstants.defaultPadding),
                     _buildErrorMessage(authController.error),
                   ],

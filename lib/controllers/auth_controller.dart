@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/supabase_service.dart';
-import '../models/user.dart';
+import '../models/user.dart' as app_user;
 
 class AuthController extends ChangeNotifier {
-  User? _currentUser;
+  app_user.User? _currentUser;
   bool _isLoading = false;
   String _error = '';
   bool _isAuthenticated = false;
   
-  User? get currentUser => _currentUser;
+  app_user.User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String get error => _error;
   bool get isAuthenticated => _isAuthenticated;
@@ -45,7 +45,7 @@ class AuthController extends ChangeNotifier {
     try {
       final userData = await SupabaseService.fetchById('users', userId);
       if (userData != null) {
-        _currentUser = User.fromJson(userData);
+        _currentUser = app_user.User.fromJson(userData);
         notifyListeners();
       }
     } catch (e) {

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors
-  static const Color primary = Color(0xFF4CAF50);
-  static const Color primaryLight = Color(0xFF81C784);
-  static const Color primaryDark = Color(0xFF388E3C);
+  static const Color primary = Color(0xFF2E7D32);
+  static const Color primaryLight = Color(0xFF60AD5E);
+  static const Color primaryDark = Color(0xFF005005);
   
   // Secondary Colors
-  static const Color secondary = Color(0xFF2196F3);
-  static const Color secondaryLight = Color(0xFF64B5F6);
-  static const Color secondaryDark = Color(0xFF1976D2);
+  static const Color secondary = Color(0xFF1976D2);
+  static const Color secondaryLight = Color(0xFF63A4FF);
+  static const Color secondaryDark = Color(0xFF004BA0);
   
   // Background Colors
   static const Color background = Color(0xFFF8F9FA);
@@ -35,7 +35,7 @@ class AppColors {
   
   // Border Colors
   static const Color border = Color(0xFFE0E0E0);
-  static const Color borderLight = Color(0xFFEEEEEE);
+  static const Color borderLight = Color(0xFFF0F0F0);
   static const Color borderDark = Color(0xFFBDBDBD);
   
   // Shadow Colors
@@ -55,30 +55,4 @@ class AppColors {
     end: Alignment.bottomRight,
     colors: [secondaryLight, secondary],
   );
-  
-  // Category Colors
-  static const List<Color> categoryColors = [
-    Color(0xFFE57373), // Red
-    Color(0xFFBA68C8), // Purple
-    Color(0xFF64B5F6), // Blue
-    Color(0xFF4DB6AC), // Teal
-    Color(0xFF81C784), // Green
-    Color(0xFFAED581), // Light Green
-    Color(0xFFFFB74D), // Orange
-    Color(0xFFFF8A65), // Deep Orange
-    Color(0xFFA1887F), // Brown
-    Color(0xFF90A4AE), // Blue Grey
-    Color(0xFFFFD54F), // Amber
-    Color(0xFFB39DDB), // Deep Purple
-  ];
-  
-  // Helper method to get category color
-  static Color getCategoryColor(int index) {
-    return categoryColors[index % categoryColors.length];
-  }
-  
-  // Helper method to get color with opacity
-  static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
-  }
 }

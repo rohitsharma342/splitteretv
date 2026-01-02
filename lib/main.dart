@@ -12,8 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await Supabase.initialize(
-    url: 'https://nrvykkckjbxftydwdzmk.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ydnlra2NramJ4ZnR5ZHdkem1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczMjc0MjEsImV4cCI6MjA4MjkwMzQyMX0.DjFyJkSXHBYvMPp-41Tpm51efVYSw3P4QjeSqmFwcNE',
+    url: 'https://hkzpcjivhujxbesaavfb.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhrenBjaml2aHVqeGJlc2FhdmZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczMjc3NDksImV4cCI6MjA4MjkwMzc0OX0.2-e2NGlJafqrl6OSpyjGQ4EgnWF2CxDPQePFXoZzT-Y',
   );
   
   runApp(const SplitteretVApp());

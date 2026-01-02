@@ -24,9 +24,7 @@ class AppConstants {
     'Healthcare',
     'Travel',
     'Education',
-    'Personal Care',
-    'Gifts & Donations',
-    'Business',
+    'Groceries',
     'Other',
   ];
   
@@ -44,26 +42,17 @@ class AppConstants {
   static const Duration mediumAnimation = Duration(milliseconds: 300);
   static const Duration longAnimation = Duration(milliseconds: 500);
   
-  // API Timeouts
-  static const Duration apiTimeout = Duration(seconds: 30);
-  static const Duration shortTimeout = Duration(seconds: 10);
+  // API Endpoints (if needed for external services)
+  static const String baseUrl = 'https://api.splitteretv.com';
   
   // Validation
   static const int minPasswordLength = 6;
   static const int maxNameLength = 50;
-  static const int maxDescriptionLength = 500;
-  
-  // Pagination
-  static const int defaultPageSize = 20;
-  static const int maxPageSize = 100;
-  
-  // File Upload
-  static const int maxFileSize = 5 * 1024 * 1024; // 5MB
-  static const List<String> allowedImageTypes = ['jpg', 'jpeg', 'png', 'gif'];
+  static const int maxDescriptionLength = 200;
   
   // Currency
   static const String defaultCurrency = 'USD';
-  static const String currencySymbol = r'$';
+  static const String currencySymbol = '$';
   
   // Date Formats
   static const String dateFormat = 'MMM dd, yyyy';
